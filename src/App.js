@@ -1,33 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import api from './api'; 
-import './App.css';
+import React from 'react';
+import Navbar from './Components/Navbar/Navbar';
 
 function App() {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    api.get('/api/Products/GetAll')
-      .then(response => {
-        setProducts(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data');
-      });
-  }, []);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Product List</h1>
-        {error && <div>{error}</div>}
-        <ul>
-          {products.map(product => (
-            <li key={product.id}>{product.name}</li>
-          ))}
-        </ul>
-      </header>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <p>Welcome to your Shop on line</p>
+      </div>
     </div>
   );
 }
