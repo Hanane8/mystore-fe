@@ -1,71 +1,97 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api'; 
+import api from '../Services/api';
 
-const ProductsComponent = () => {
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState(null);
+const ProductsComponent = ({ category }) => {
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        api.get('/api/Products/GetAll')
-            .then(response => {
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setError('Error fetching data');
-            });
-    }, []);
+  useEffect(() => {
+    if (category) {
+      fetchProductsByCategory(category);
+    } else {
+      fetchAllProducts();
+    }
+  }, [category]);
 
-    const addProduct = (product) => {
-        api.post('/api/Products/add', product)
-            .then(response => {
-                console.log(response.data);
-                setProducts([...products, response.data]);
-            })
-            .catch(error => {
-                console.error('Error adding product:', error);
-                setError('Error adding product');
-            });
-    };
+  const fetchAllProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/api/Products/GetAll');
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching all products:', error);
+      setError('Error fetching all products.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const updateProduct = (id, product) => {
-        api.put(`/api/Products/Update/${id}`, product)
-            .then(response => {
-                console.log(response.data);
-                setProducts(products.map(p => (p.id === id ? response.data : p)));
-            })
-            .catch(error => {
-                console.error('Error updating product:', error);
-                setError('Error updating product');
-            });
-    };
+  const fetchProductsByCategory = async (categoryName) => {
+    setLoading(true);
+    try {
+      const response = await api.get(
+        `/api/Products/by-category-name?categoryName=${categoryName}`
+      );
+      setProducts(response.data.data || []);
+    } catch (error) {
+      console.error(`Error fetching products for category ${categoryName}:`, error);
+      setError('Error fetching products by category.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const deleteProduct = (id) => {
-        api.delete(`/api/Products/Delete/${id}`)
-            .then(response => {
-                console.log(response.data);
-                setProducts(products.filter(p => p.id !== id));
-            })
-            .catch(error => {
-                console.error('Error deleting product:', error);
-                setError('Error deleting product');
-            });
-    };
+  const deleteProduct = async (id) => {
+    try {
+      await api.delete(`/api/Products/Delete/${id}`);
+      setProducts((prevProducts) => prevProducts.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      setError('Error deleting product.');
+    }
+  };
 
-    return (
-        <div>
-            {error && <div>{error}</div>}
-            <ul>
-                {products.map(product => (
-                    <li key={product.id}>
-                        {product.name}
-                        <button onClick={() => deleteProduct(product.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-            {/* Add forms and buttons here to add and update products */}
-        </div>
-    );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">
+        {category ? `${category} Products` : 'All Products'}
+      </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {products.map((product) => (
+          <div key={product.id} className="bg-white p-4 rounded shadow">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="h-32 w-full object-cover mb-2"
+            />
+            <h3 className="text-lg font-semibold">{product.name}</h3>
+            <p className="text-gray-500">{product.description}</p>
+            <p className="text-gray-700 font-bold">${product.price}</p>
+            <button
+              className="text-red-500"
+              onClick={() => deleteProduct(product.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
+
+export const getProductsByCategoryName = async (categoryName) => {
+    try {
+      const response = await api.get(`/api/Products/by-category-name?categoryName=${categoryName}`);
+      return response.data.data || [];
+    } catch (error) {
+      console.error(`Error fetching products for category ${categoryName}:`, error);
+      throw new Error('Error fetching products by category.');
+    }
+  };
 
 export default ProductsComponent;

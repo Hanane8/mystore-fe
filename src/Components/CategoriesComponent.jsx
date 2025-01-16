@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '../Services/api'; 
+import { getProductsByCategoryName } from './ProductsComponent';
+
 const Category = () => {
-  const { category } = useParams(); 
+  const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,18 +12,17 @@ const Category = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/api/Products/by-category-name?categoryName=${category}`);
-        setProducts(response.data.data); 
+        const productsData = await getProductsByCategoryName(category);
+        setProducts(productsData);
       } catch (err) {
         setError('Failed to load products.');
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, [category]);
-  
 
   if (loading) {
     return <div>Loading...</div>;
