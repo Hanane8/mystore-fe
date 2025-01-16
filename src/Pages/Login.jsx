@@ -22,12 +22,9 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
     try {
       const result = await loginUser(formData);
       console.log('Login successful:', result);
-      // Save the token to localStorage or state management
       localStorage.setItem('token', result.token);
-      // Set login status to true
       setIsLoggedIn(true);
-      // Navigate to the shop page
-      navigate('/shop');
+      navigate('/');
     } catch (error) {
       setError(error.message || 'An error occurred');
     }

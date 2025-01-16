@@ -11,17 +11,18 @@ const Category = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/api/Products/by-category-name?categoryName=${category}`); 
-        setProducts(response.data);
+        const response = await api.get(`/api/Products/by-category-name?categoryName=${category}`);
+        setProducts(response.data.data); 
       } catch (err) {
         setError('Failed to load products.');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
-  }, [category]); 
+  }, [category]);
+  
 
   if (loading) {
     return <div>Loading...</div>;
