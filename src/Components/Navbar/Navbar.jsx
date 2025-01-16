@@ -6,9 +6,9 @@ import UserComponent from '../UserComponent';
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const navItems = [
     { name: 'Shop', link: '/' },
-    { name: 'Men', link: '/category/men' },
-    { name: 'Women', link: '/category/women' },
-    { name: 'Kids', link: '/category/kids' },
+  { name: 'Men', link: '/category/5D387C17-BD99-4E56-A406-E074050D19AC', id:'5D387C17-BD99-4E56-A406-E074050D19AC'},
+    { name: 'Women', link: '/category/14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5', id:'14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5' },
+    { name: 'Kids', link: '/category/C17DFE6C-77C8-4539-8224-5EB906138CDD', id:'C17DFE6C-77C8-4539-8224-5EB906138CDD' },
   ];
 
   return (

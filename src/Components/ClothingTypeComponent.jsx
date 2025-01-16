@@ -11,13 +11,12 @@ const ClothingTypeComponent = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
 
-  // Fetch all clothing types
   const fetchClothingTypes = async () => {
     setLoading(true);
     try {
       const response = await api.get('/api/ClothingType/GetAll');
       setClothingTypes(response.data);
-      setFilteredClothingTypes(response.data); // Initialize filtered list
+      setFilteredClothingTypes(response.data); 
       setMessage(null);
     } catch (err) {
       setError('Failed to load clothing types.');
@@ -30,7 +29,6 @@ const ClothingTypeComponent = () => {
     fetchClothingTypes();
   }, []);
 
-  // Get clothing types by category
   const fetchClothingTypesByCategory = async () => {
     setLoading(true);
     try {
@@ -44,12 +42,11 @@ const ClothingTypeComponent = () => {
     }
   };
 
-  // Get clothing type by ID
   const fetchClothingTypeById = async () => {
     setLoading(true);
     try {
       const response = await api.get(`/api/ClothingType/GetById/${clothingTypeId}`);
-      setFilteredClothingTypes([response.data]); // Show single item in filtered list
+      setFilteredClothingTypes([response.data]); 
       setMessage('Filtered by ID.');
     } catch (err) {
       setError('Failed to find clothing type by ID.');
