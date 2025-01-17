@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../Services/api';
 
 const ProductsComponent = ({ categoryId, clothingTypeId }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -13,11 +15,9 @@ const ProductsComponent = ({ categoryId, clothingTypeId }) => {
 
       try {
         let response;
-        if (clothingTypeId) {
-          
+        if (clothingTypeId) {          
           response = await api.get(`/api/Products/by-clothing-type/${clothingTypeId}`);
         } else if (categoryId) {
-       
           response = await api.get(`/api/Products/category/${categoryId}`);
         }
         setProducts(response?.data || []);
@@ -32,6 +32,11 @@ const ProductsComponent = ({ categoryId, clothingTypeId }) => {
     fetchProducts();
   }, [categoryId, clothingTypeId]);
 
+  const handleProductClick = (productId) => {
+    navigate(`/products/${productId}`);
+  };
+
+  
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -43,7 +48,7 @@ const ProductsComponent = ({ categoryId, clothingTypeId }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {products.map((product) => (
-        <div key={product.id} className="bg-white p-4 rounded shadow">
+        <div key={product.id} onClick={() => handleProductClick(product.id)} className="bg-white p-4 rounded shadow">
           <img
             src={product.imageUrl}
             alt={product.name}
@@ -52,6 +57,7 @@ const ProductsComponent = ({ categoryId, clothingTypeId }) => {
           <h3 className="text-lg font-semibold">{product.name}</h3>
           <p className="text-gray-500">{product.description}</p>
           <p className="text-gray-700 font-bold">${product.price}</p>
+          
         </div>
       ))}
     </div>

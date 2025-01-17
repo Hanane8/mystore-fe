@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, LogIn, Store, LogOut } from 'lucide-react';
-import UserComponent from '../UserComponent';
 
-const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
+const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
   const navItems = [
     { name: 'Shop', link: '/' },
-  { name: 'Men', link: '/category/5D387C17-BD99-4E56-A406-E074050D19AC', id:'5D387C17-BD99-4E56-A406-E074050D19AC'},
-    { name: 'Women', link: '/category/14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5', id:'14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5' },
-    { name: 'Kids', link: '/category/C17DFE6C-77C8-4539-8224-5EB906138CDD', id:'C17DFE6C-77C8-4539-8224-5EB906138CDD' },
+    { name: 'Men', link: '/category/5D387C17-BD99-4E56-A406-E074050D19AC' },
+    { name: 'Women', link: '/category/14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5' },
+    { name: 'Kids', link: '/category/C17DFE6C-77C8-4539-8224-5EB906138CDD' },
   ];
 
   return (
@@ -21,8 +20,8 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
             <span className="ml-2 text-xl font-bold text-gray-900">Store</span>
           </div>
 
-         {/* Links */}
-         <div className="hidden md:flex items-center justify-center flex-1">
+          {/* Links */}
+          <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex space-x-8">
               {navItems.map((item) => (
                 <Link
@@ -51,7 +50,11 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
             )}
             <Link to="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
               <ShoppingCart className="h-6 w-6" />
-              <span className="absolute top-0 right-0 -mt-1 -mr-1 px-2 py-0.5 text-xs text-white bg-red-500 rounded-full">0</span>
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 -mt-1 -mr-1 px-2 py-0.5 text-xs text-white bg-red-500 rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </div>
         </div>
