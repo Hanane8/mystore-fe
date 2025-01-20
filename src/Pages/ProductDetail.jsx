@@ -8,7 +8,6 @@ const ProductDetail = ({ addToCart }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState('');
   const [cartMessage, setCartMessage] = useState('');
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const ProductDetail = ({ addToCart }) => {
 
       try {
         const response = await api.get(`/api/Products/GetById/${productId}`);
-        setProduct(response.data);
+        setProduct(response.data); // Hämta produkten och dess egenskaper
       } catch (err) {
         console.error('Error fetching product details:', err);
         setError('Failed to fetch product details.');
@@ -31,15 +30,27 @@ const ProductDetail = ({ addToCart }) => {
   }, [productId]);
 
   const handleAddToCart = async () => {
+    if (!product) {
+      alert('Product details not available.');
+      return;
+    }
+
     try {
       const response = await api.post('/api/Cart/add-to-cart', {
         productId: product.id,
-        quantity: quantity,
-        size: size
+        quantity,
+        size: product.size, // Hämta storleken från produktsvaret
       });
+
       if (response.status === 200) {
-        addToCart({ id: product.id, name: product.name, quantity, size, price: product.price });
-        setCartMessage(response.data.message);
+        addToCart({
+          id: product.id,
+          name: product.name,
+          quantity,
+          size: product.size, // Lägg till storleken från produkten
+          price: product.price,
+        });
+        setCartMessage(response.data.message || 'Product added to cart!');
       }
     } catch (err) {
       console.error('Error adding product to cart:', err);
@@ -57,21 +68,20 @@ const ProductDetail = ({ addToCart }) => {
       <img src={product.imageUrl} alt={product.name} />
       <p>{product.description}</p>
       <p>Price: ${product.price}</p>
-      
+      <p>Size: {product.size}</p> {/* Visa storleken direkt */}
+
       <div>
         <label>
           Quantity:
-          <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" />
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+            min="1"
+          />
         </label>
       </div>
-      
-      <div>
-        <label>
-          Size:
-          <input type="text" value={size} onChange={(e) => setSize(e.target.value)} />
-        </label>
-      </div>
-      
+
       <button onClick={handleAddToCart} className="mt-2 bg-blue-500 text-white py-1 px-4 rounded">
         Add to Cart
       </button>

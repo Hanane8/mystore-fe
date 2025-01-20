@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, LogIn, Store, LogOut } from 'lucide-react';
+import logo from '../Assets/Logo.png';
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
   const navItems = [
     { name: 'Shop', link: '/' },
-    { name: 'Men', link: '/category/5D387C17-BD99-4E56-A406-E074050D19AC' },
-    { name: 'Women', link: '/category/14DBB0F0-6AB1-45D8-89D6-0C90C6E52CB5' },
-    { name: 'Kids', link: '/category/C17DFE6C-77C8-4539-8224-5EB906138CDD' },
+    { name: 'Men', link: '/category/1465BD91-485E-4656-917B-B3757C4FEE99' },
+    { name: 'Women', link: '/category/C66690D3-AEB4-4BAD-B97F-21F4411C731A' },
+    { name: 'Kids', link: '/category/89B73B97-4637-49F0-A3D8-BAF0FD004DDB' },
   ];
 
   return (
@@ -16,8 +17,9 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Store className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">Store</span>
+
+            <img src={logo}  alt="" className="h-8 w-8 text-blue-600" />
+            <span className="ml-2 text-xl font-bold text-gray-900">My Store</span>
           </div>
 
           {/* Links */}
@@ -37,17 +39,31 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
 
           {/* Right side buttons */}
           <div className="flex items-center space-x-4">
-            {!isLoggedIn ? (
-              <Link to="/login" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                <LogIn className="h-4 w-4 mr-2" />
-                Login
-              </Link>
-            ) : (
-              <button onClick={() => setIsLoggedIn(false)} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </button>
-            )}
+          {!isLoggedIn ? (
+          <Link
+            to="/login"
+            className="inline-flex items-center px-4 py-2 text-xs font-medium rounded-full text-gray-500 bg-white border border-gray-500 focus:outline-none transition-colors duration-200 cursor-pointer active:bg-gray-200"
+            style={{
+              borderRadius: '75px',
+              fontWeight: '500'
+            }}
+          >
+            <LogIn className="h-4 w-4 mr-2" />
+            Login
+          </Link>
+        ) : (
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            className="inline-flex items-center px-4 py-2 text-xs font-medium rounded-full text-gray-500 bg-white border border-gray-500 focus:outline-none transition-colors duration-200 cursor-pointer active:bg-gray-200"
+            style={{
+              borderRadius: '75px',
+              fontWeight: '500'
+            }}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </button>
+        )}
             <Link to="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
               <ShoppingCart className="h-6 w-6" />
               {cartCount > 0 && (
