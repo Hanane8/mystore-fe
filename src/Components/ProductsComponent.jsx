@@ -52,11 +52,11 @@ const ProductsComponent = ({ categoryId, clothingTypeId }) => {
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="h-32 w-full object-cover mb-2"
+            className="w-full h-[400px] object-cover transition-transform duration-300 group-hover:scale-105"
+                
           />
           <h3 className="text-lg font-semibold">{product.name}</h3>
-          <p className="text-gray-500">{product.description}</p>
-          <p className="text-gray-700 font-bold">${product.price}</p>
+          <p className="text-gray6700 font-bold">${product.price}</p>
           
         </div>
       ))}

@@ -53,11 +53,11 @@ const CategoryComponent = () => {
         setSelectedType={setSelectedType}
       />
       <div className="flex-1 p-4">
+      {selectedType && (
         <h1 className="text-2xl font-bold mb-4 capitalize">
-          {selectedType
-            ? `${clothingTypes.find((type) => type.id === selectedType)?.name} Products`
-            : `${category} Products`}
+          {clothingTypes.find((type) => type.id === selectedType)?.name} Products
         </h1>
+      )}
         <ProductsComponent categoryId={category} clothingTypeId={selectedType} />
       </div>
     </div>

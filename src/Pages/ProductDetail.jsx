@@ -39,7 +39,7 @@ const ProductDetail = ({ addToCart }) => {
       const response = await api.post('/api/Cart/add-to-cart', {
         productId: product.id,
         quantity,
-        size: product.size, // Hämta storleken från produktsvaret
+        size: product.size, 
       });
 
       if (response.status === 200) {
@@ -47,7 +47,7 @@ const ProductDetail = ({ addToCart }) => {
           id: product.id,
           name: product.name,
           quantity,
-          size: product.size, // Lägg till storleken från produkten
+          size: product.size, 
           price: product.price,
         });
         setCartMessage(response.data.message || 'Product added to cart!');
@@ -63,30 +63,66 @@ const ProductDetail = ({ addToCart }) => {
   if (!product) return <div>No product found</div>;
 
   return (
-    <div>
-      <h1>{product.name}</h1>
-      <img src={product.imageUrl} alt={product.name} />
-      <p>{product.description}</p>
-      <p>Price: ${product.price}</p>
-      <p>Size: {product.size}</p> {/* Visa storleken direkt */}
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="md:flex">
+          {/* Image Section */}
+          <div className="md:flex-shrink-0 md:w-1/2">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="h-full w-full object-cover md:h-[500px]"
+            />
+          </div>
 
-      <div>
-        <label>
-          Quantity:
-          <input
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-            min="1"
-          />
-        </label>
+          {/* Content Section */}
+          <div className="p-8 md:w-1/2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
+            
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              {product.description}
+            </p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-600">Price</span>
+                <span className="text-2xl font-semibold text-gray-900">${product.price}</span>
+              </div>
+
+              <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-600">Size</span>
+                <span className="font-medium text-gray-900">{product.size}</span>
+              </div>
+
+              <div className="pt-4">
+                <label className="block text-gray-600 mb-2">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+                  min="1"
+                  className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+            >
+              Add to Cart
+            </button>
+
+            {cartMessage && (
+              <div className="mt-4 p-4 bg-green-50 text-green-700 rounded-md text-center">
+                {cartMessage}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      <button onClick={handleAddToCart} className="mt-2 bg-blue-500 text-white py-1 px-4 rounded">
-        Add to Cart
-      </button>
-
-      {cartMessage && <div>{cartMessage}</div>}
     </div>
   );
 };
