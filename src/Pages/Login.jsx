@@ -24,9 +24,15 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
     try {
       const result = await loginUser(formData);
       console.log('Login successful:', result);
-      localStorage.setItem('token', result.token);
-      setIsLoggedIn(true);
-      navigate('/');
+  
+      if (result.token) {
+        localStorage.setItem('token', result.token.token);
+        localStorage.setItem('userId', result.token.userId);
+        setIsLoggedIn(true);
+        navigate('/');
+      } else {
+        throw new Error('Token not found in response');
+      }
     } catch (error) {
       setError(error.message || 'An error occurred');
     }
