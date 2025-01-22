@@ -6,9 +6,9 @@ import logo from '../Assets/Logo.png';
 const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
   const navItems = [
     { name: 'Shop', link: '/' },
-    { name: 'Men', link: '/category/A1EEDD2A-3069-451A-95E4-920A4F4A0263' },
-    { name: 'Women', link: '/category/652886FC-1DF9-4345-AB3D-C2BE80140975' },
-    { name: 'Kids', link: '/category/481C6142-4FE3-44F4-A091-F97E1A600D30' },
+    { name: 'Men', link: '/category/BAFA2767-909A-4045-89BE-F6CA208B02AB' },
+    { name: 'Women', link: '/category/0D9164FE-78E0-4DD6-B862-C0FE619C6C1F' },
+    { name: 'Kids', link: '/category/AABCC908-2D36-47DA-BC18-AD1548221927' },
   ];
 
   return (
