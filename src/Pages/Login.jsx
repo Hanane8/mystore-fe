@@ -40,14 +40,25 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
 
   const handleLogout = async () => {
     try {
-      const result = await logoutUser();
-      console.log('Logout successful:', result);
-      localStorage.removeItem('token');
-      setIsLoggedIn(false);
+        const result = await logoutUser();
+        console.log('Logout successful:', result);
+        
+        // Debugging: Log current localStorage state
+        console.log('Before removing items:', localStorage.getItem('token'), localStorage.getItem('userId'));
+        
+        // Remove token and userId from localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        
+        // Debugging: Log localStorage state after removal
+        console.log('After removing items:', localStorage.getItem('token'), localStorage.getItem('userId'));
+        
+        // Update application state
+        setIsLoggedIn(false);
     } catch (error) {
-      console.error('Logout failed:', error);
+        console.error('Logout failed:', error);
     }
-  };
+};
 
   return (
     <div
