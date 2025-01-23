@@ -1,9 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingCart, LogIn, Store, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, LogIn, LogOut } from 'lucide-react';
 import logo from '../Assets/Logo.png';
+import { logoutUser } from '../../Services/authService';
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser(); 
+      setIsLoggedIn(false); 
+      navigate('/login'); 
+    } catch (error) {
+      console.error('Logout failed:', error); 
+    }
+  };
+  
   const navItems = [
     { name: 'Shop', link: '/' },
     { name: 'Men', link: '/category/BAFA2767-909A-4045-89BE-F6CA208B02AB' },
@@ -53,16 +66,13 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
           </Link>
         ) : (
           <button
-            onClick={() => setIsLoggedIn(false)}
-            className="inline-flex items-center px-4 py-2 text-xs font-medium rounded-full text-gray-500 bg-white border border-gray-500 focus:outline-none transition-colors duration-200 cursor-pointer active:bg-gray-200"
-            style={{
-              borderRadius: '75px',
-              fontWeight: '500'
-            }}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </button>
+                onClick={handleLogout}
+                className="inline-flex items-center px-4 py-2 text-xs font-medium rounded-full text-gray-500 bg-white border border-gray-500 focus:outline-none transition-colors duration-200 cursor-pointer active:bg-gray-200"
+                style={{ borderRadius: '75px', fontWeight: '500' }}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </button>
         )}
             <Link to="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
               <ShoppingCart className="h-6 w-6" />

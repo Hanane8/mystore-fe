@@ -30,9 +30,9 @@ export const loginUser = async (loginData) => {
 
 export const logoutUser = async () => {
   try {
-    await api.get('/api/User/logout');
+    await api.post('/api/User/logout'); 
     localStorage.removeItem('token'); 
-    localStorage.removeItem('userId'); // Lägg till denna rad för att ta bort userId
+    localStorage.removeItem('userId'); 
   } catch (error) {
     console.error('Logout failed', error);
   }
