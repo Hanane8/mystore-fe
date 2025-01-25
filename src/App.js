@@ -6,7 +6,8 @@ import Category from './Pages/Category';
 import Registration from './Pages/Registration';
 import Login from './Pages/Login';
 import ProductDetail from './Pages/ProductDetail';
-import Cart from './Pages/Cart';  // Import the Cart page
+import Checkout from './Pages/Checkout';
+import Cart from './Pages/Cart';  
 
 import './index.css';
 
@@ -28,7 +29,8 @@ function App() {
           <Route path="/" element={<Shop />} />
           <Route path="/category/:category" element={<Category />} />
           <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
-          <Route path="/cart" element={<Cart cartItems={cartItems} />} />  {/* Pass cartItems as a prop */}
+          <Route path="/cart" element={<Cart cartItems={cartItems} />} />  
+          <Route path="/checkout" element={<Checkout cartItems={cartItems} />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         </Routes>

@@ -19,9 +19,9 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
   
   const navItems = [
     { name: 'Shop', link: '/' },
-    { name: 'Men', link: '/category/BAFA2767-909A-4045-89BE-F6CA208B02AB' },
-    { name: 'Women', link: '/category/0D9164FE-78E0-4DD6-B862-C0FE619C6C1F' },
-    { name: 'Kids', link: '/category/AABCC908-2D36-47DA-BC18-AD1548221927' },
+    { name: 'Men', link: '/category/EAABE81E-246B-403E-B3A8-3E958880429C' },
+    { name: 'Women', link: '/category/00D6C0D6-04F1-4DA0-AE13-F4AD5EC9BE43' },
+    { name: 'Kids', link: '/category/E774878B-31FF-4C67-A65F-CAA61177AAC9' },
   ];
 
   return (
