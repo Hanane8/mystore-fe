@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../Services/api';
 
 const Checkout = ({ cartItems }) => {
   const [userDetails, setUserDetails] = useState({
@@ -23,36 +24,49 @@ const Checkout = ({ cartItems }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please log in to complete your order.');
+      navigate('/login');
+      return;
+    }
+
     // Simple validation
     if (!userDetails.fullName || !userDetails.address || !userDetails.mobile) {
       alert('Please fill in all fields.');
       return;
     }
 
-    // API request to create order
-    try {
-      const response = await fetch('/api/Order/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: 1, // Assume user ID is 1, replace with actual user data
-          checkout: userDetails,
-          cartItems,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Order creation failed.');
+    // Format the request payload to match the API's expected structure
+    const payload = {
+      checkout: {
+        userId: localStorage.getItem('userId'), // Get userId from localStorage
+        cartItems: cartItems.map(item => ({
+          productId: item.id,
+          productName: item.name,
+          imageUrl: item.imageUrl,
+          size: item.size,
+          price: item.price,
+          quantity: item.quantity
+        })),
+        address: userDetails.address,
+        mobile: userDetails.mobile,
+        fullName: userDetails.fullName
       }
+    };
 
-      const result = await response.json();
-      alert('Order created successfully!');
-      navigate('/order-summary'); // Redirect to order summary page
+    try {
+      const response = await api.post('api/Order/create', payload);
+      
+      if (response.data.isSuccessfull) {
+        alert('Order created successfully!');
+        navigate('/order-summary');
+      } else {
+        throw new Error(response.data.errorMessage || 'Order creation failed');
+      }
     } catch (error) {
-      console.error(error);
-      alert('An error occurred while placing your order.');
+      console.error('Error creating order:', error);
+      alert(error.response?.data?.errorMessage || error.message || 'An error occurred while placing your order.');
     }
   };
 
