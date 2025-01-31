@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../Services/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../Services/api";
 
-const Checkout = ({ cartItems }) => {
+const Checkout = ({ cartItems, setCartItems }) => {
   const [userDetails, setUserDetails] = useState({
-    fullName: '',
-    address: '',
-    mobile: '',
+    fullName: "",
+    address: "",
+    mobile: "",
   });
 
   const navigate = useNavigate();
-
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleChange = (e) => {
@@ -24,49 +23,50 @@ const Checkout = ({ cartItems }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      alert('Please log in to complete your order.');
-      navigate('/login');
+      alert("Please log in to complete your order.");
+      navigate("/login");
       return;
     }
 
-    // Simple validation
     if (!userDetails.fullName || !userDetails.address || !userDetails.mobile) {
-      alert('Please fill in all fields.');
+      alert("Please fill in all fields.");
       return;
     }
 
-    // Format the request payload to match the API's expected structure
     const payload = {
       checkout: {
-        userId: localStorage.getItem('userId'), // Get userId from localStorage
-        cartItems: cartItems.map(item => ({
+        userId: localStorage.getItem("userId"),
+        cartItems: cartItems.map((item) => ({
           productId: item.id,
           productName: item.name,
           imageUrl: item.imageUrl,
           size: item.size,
           price: item.price,
-          quantity: item.quantity
+          quantity: item.quantity,
         })),
         address: userDetails.address,
         mobile: userDetails.mobile,
-        fullName: userDetails.fullName
-      }
+        fullName: userDetails.fullName,
+        total: Number(total.toFixed(2)),
+      },
     };
 
     try {
-      const response = await api.post('api/Order/create', payload);
-      
+      const response = await api.post("api/Order/create", payload);
+
       if (response.data.isSuccessfull) {
-        alert('Order created successfully!');
-        navigate('/order-summary');
+        alert("Order created successfully!");
+        setCartItems([]);
+
+        navigate("/order-summary", { state: { order: payload.checkout } });
       } else {
-        throw new Error(response.data.errorMessage || 'Order creation failed');
+        throw new Error(response.data.errorMessage || "Order creation failed");
       }
     } catch (error) {
-      console.error('Error creating order:', error);
-      alert(error.response?.data?.errorMessage || error.message || 'An error occurred while placing your order.');
+      console.error("Error creating order:", error);
+      alert(error.response?.data?.errorMessage || error.message || "An error occurred while placing your order.");
     }
   };
 
@@ -75,7 +75,7 @@ const Checkout = ({ cartItems }) => {
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
-        {/* Cart Items Summary */}
+        {/* Orderöversikt */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
           <div className="space-y-4">
@@ -96,7 +96,7 @@ const Checkout = ({ cartItems }) => {
           </div>
         </div>
 
-        {/* User Information Form */}
+        {/* Användarinformation */}
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Information</h2>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">

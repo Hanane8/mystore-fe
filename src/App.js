@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './Components/Navbar/Navbar';
-import Shop from './Pages/Shop';
-import Category from './Pages/Category';
-import Registration from './Pages/Registration';
-import Login from './Pages/Login';
-import ProductDetail from './Pages/ProductDetail';
-import Checkout from './Pages/Checkout';
-import Cart from './Pages/Cart';  
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Navbar from "./Components/Navbar/Navbar";
+import Shop from "./Pages/Shop";
+import Category from "./Pages/Category";
+import Registration from "./Pages/Registration";
+import Login from "./Pages/Login";
+import ProductDetail from "./Pages/ProductDetail";
+import Checkout from "./Pages/Checkout";
+import Cart from "./Pages/Cart";
+import OrderSummary from "./Components/OrderSummary";
 
-import './index.css';
+import "./index.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,8 +30,9 @@ function App() {
           <Route path="/" element={<Shop />} />
           <Route path="/category/:category" element={<Category />} />
           <Route path="/products/:productId" element={<ProductDetail addToCart={addToCart} />} />
-          <Route path="/cart" element={<Cart cartItems={cartItems} />} />  
-          <Route path="/checkout" element={<Checkout cartItems={cartItems} />} />
+          <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+          <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+          <Route path="/order-summary" element={<OrderSummary />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         </Routes>
