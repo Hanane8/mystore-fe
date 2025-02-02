@@ -9,6 +9,8 @@ import ProductDetail from "./Pages/ProductDetail";
 import Checkout from "./Pages/Checkout";
 import Cart from "./Pages/Cart";
 import OrderSummary from "./Components/OrderSummary";
+import MyProfile from "./Pages/MyProfile";
+import MyOrders from "./Pages/MyOrders";
 
 import "./index.css";
 
@@ -34,6 +36,8 @@ function App() {
           <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
           <Route path="/order-summary" element={<OrderSummary />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/profile" element={<MyProfile />} />
+  <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         </Routes>
       </Router>
