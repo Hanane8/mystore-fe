@@ -4,9 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 const OrderSummary = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const order = location.state?.order; // Hämta order från state
+  const order = location.state?.order; 
 
-  // Om ingen order hittas, visa ett meddelande och en knapp för att gå tillbaka till startsidan
   if (!order) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -67,7 +66,7 @@ const OrderSummary = () => {
           onClick={() => navigate("/")}
           className="mt-6 w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-medium"
         >
-          Continue Shopping
+          Shopping
         </button>
       </div>
     </div>

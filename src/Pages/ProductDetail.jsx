@@ -36,14 +36,14 @@ const ProductDetail = ({ addToCart }) => {
         }
 
         try {
-            const totalPrice = (product.price * quantity).toFixed(2); // Räkna totalpriset
+            const totalPrice = (product.price * quantity).toFixed(2); 
 
             const payload = {
                 productId: product.id,
                 quantity,
                 size: product.size,
                 imageUrl: product.imageUrl,
-                totalPrice, // Lägg till totalpriset i payload
+                totalPrice, 
             };
 
             // Hämta `userId` från localStorage

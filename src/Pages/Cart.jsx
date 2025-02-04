@@ -1,38 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../Services/api';
 
-const Cart = ({ cartItems, setCartItems }) => {
-  const [editingQuantity, setEditingQuantity] = useState(null);
+const Cart = ({ setCartItems }) => {
+  const [cartItems, setCartItemsLocal] = useState([]); 
   const [quantity, setQuantity] = useState(0);
+  const [editingQuantity, setEditingQuantity] = useState(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const userId = localStorage.getItem('userId');
 
-  const handleRemoveItem = (id) => {
-    const updatedCart = cartItems.filter(item => item.id !== id);
-    setCartItems(updatedCart);
+  useEffect(() => {
+    if (userId) {
+      fetchCart(userId);
+    } else {
+      setError('User is not logged in.');
+    }
+  }, [userId]);
+
+  const fetchCart = async (userId) => {
+    try {
+      const response = await api.get(`/api/Cart/user/${userId}`);
+      if (response.status === 200 && response.data.isSuccessfull) {
+        setCartItemsLocal(response.data.data.items); 
+      }
+    } catch (err) {
+      setError('Could not fetch the cart.');
+      console.error('Error fetching cart:', err);
+    }
   };
 
-  const handleChangeQuantity = (id) => {
-    const updatedCart = cartItems.map(item =>
-      item.id === id ? { ...item, quantity: quantity } : item
-    );
-    setCartItems(updatedCart);
-    setEditingQuantity(null);
+  const handleChangeQuantity = async (productId) => {
+    try {
+      setError('');
+
+      if (quantity < 1 || isNaN(quantity)) {
+        setError('Quantity must be at least 1.');
+        return;
+      }
+
+      if (!userId) {
+        setError('User is not logged in.');
+        return;
+      }
+
+      console.log("Updating cart item with data:", { userId, productId, quantity });
+
+      const response = await api.put(`/api/CartItem/update-quantity`, {
+        userId,
+        productId,
+        quantity
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("API response:", response);
+
+      if (response.status === 200 && response.data) {
+        if (response.data.message === 'Quantity and total price updated successfully.') {
+          const updatedCart = cartItems.map(item =>
+            item.productId === productId
+              ? {
+                  ...item,
+                  quantity: quantity, 
+                  totalPrice: item.price * quantity 
+                }
+              : item
+          );
+          setCartItemsLocal(updatedCart);  
+          setEditingQuantity(null);
+        } else {
+          setError('Failed to update cart item.');
+        }
+      } else {
+        setError('Failed to update cart item.');
+      }
+    } catch (error) {
+      console.error('Error updating cart item:', error);
+      setError(error.response?.data?.error || 'An error occurred while updating the cart.');
+    }
+  };
+
+  const handleRemoveItem = (productId) => {
+    const updatedCart = cartItems.filter(item => item.productId !== productId);
+    setCartItemsLocal(updatedCart); 
   };
 
   const handleProceedToCheckout = () => {
     if (cartItems.length === 0) {
-      alert('Your cart is empty. Add items before proceeding.');
+      setError('Your cart is empty. Add items before proceeding.');
       return;
     }
     navigate('/checkout');
   };
 
+  const total = cartItems.reduce((acc, item) => acc + (item.totalPrice || 0), 0);
+
+  const formatPrice = (price) => {
+    return isNaN(Number(price)) ? '0.00' : Number(price).toFixed(2);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Shopping Cart</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Cart</h1>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
         {cartItems.length === 0 ? (
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
@@ -40,20 +120,19 @@ const Cart = ({ cartItems, setCartItems }) => {
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Cart Items */}
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {cartItems.map(item => (
-                <div key={item.id} className="flex items-center p-6 border-b border-gray-200 last:border-b-0">
+                <div key={item.productId} className="flex items-center p-6 border-b border-gray-200 last:border-b-0">
                   <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
                     <img 
                       src={item.imageUrl} 
-                      alt={item.name} 
+                      alt={item.productName} 
                       className="w-full h-full object-cover" 
                     />
                   </div>
 
                   <div className="ml-6 flex-1">
-                    <h2 className="text-lg font-semibold text-gray-900">{item.name}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">{item.productName}</h2>
                     <div className="mt-1 flex items-center text-sm text-gray-500">
                       <span className="mr-4">Size: {item.size}</span>
                       <span>Quantity: {item.quantity}</span>
@@ -62,23 +141,22 @@ const Cart = ({ cartItems, setCartItems }) => {
 
                   <div className="ml-6">
                     <p className="text-lg font-semibold text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatPrice(item.totalPrice)} kr
                     </p>
                   </div>
 
-                  {/* Edit Quantity */}
-                  {editingQuantity === item.id ? (
-                    <div className="flex items-center">
+                  {editingQuantity === item.productId ? (
+                    <div className="flex items-center ml-6">
                       <input
                         type="number"
                         min="1"
                         value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
+                        onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
                         className="w-16 p-2 border border-gray-300 rounded-md mr-4"
                       />
                       <button 
-                        onClick={() => handleChangeQuantity(item.id)} 
-                        className="bg-green-600 text-white py-1 px-4 rounded-lg"
+                        onClick={() => handleChangeQuantity(item.productId)} 
+                        className="bg-green-600 text-white py-1 px-4 rounded-lg hover:bg-green-700 transition-colors"
                       >
                         Update
                       </button>
@@ -86,19 +164,18 @@ const Cart = ({ cartItems, setCartItems }) => {
                   ) : (
                     <button
                       onClick={() => {
-                        setEditingQuantity(item.id);
-                        setQuantity(item.quantity);
+                        setEditingQuantity(item.productId);
+                        setQuantity(item.quantity);  
                       }}
-                      className="bg-yellow-500 text-white py-1 px-4 rounded-lg"
+                      className="ml-6 bg-yellow-500 text-white py-1 px-4 rounded-lg hover:bg-yellow-600 transition-colors"
                     >
                       Edit
                     </button>
                   )}
 
-                  {/* Remove Item */}
                   <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="ml-4 bg-red-600 text-white py-1 px-4 rounded-lg"
+                    onClick={() => handleRemoveItem(item.productId)}
+                    className="ml-4 bg-red-600 text-white py-1 px-4 rounded-lg hover:bg-red-700 transition-colors"
                   >
                     Remove
                   </button>
@@ -106,13 +183,12 @@ const Cart = ({ cartItems, setCartItems }) => {
               ))}
             </div>
 
-            {/* Order Summary */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
               <div className="space-y-2">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPrice(total)} kr</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
@@ -121,7 +197,7 @@ const Cart = ({ cartItems, setCartItems }) => {
                 <div className="h-px bg-gray-200 my-4"></div>
                 <div className="flex justify-between text-lg font-semibold text-gray-900">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPrice(total)} kr</span>
                 </div>
               </div>
 

@@ -6,8 +6,7 @@ import { logoutUser } from "../../Services/authService";
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn, cartCount }) => {
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = useState(false); // Hantera dropdown-meny
-
+  const [showDropdown, setShowDropdown] = useState(false); 
   const handleLogout = async () => {
     try {
       await logoutUser();

@@ -25,13 +25,13 @@ const MyOrders = () => {
 
   const getOrderStatus = (status) => {
     switch (status) {
-      case 0:
+      case "Pending":
         return "Pending";
-      case 1:
+      case "Processing":
         return "Processing";
-      case 2:
+      case "Shipped":
         return "Shipped";
-      case 3:
+      case "Delivered":
         return "Delivered";
       default:
         return "Unknown";
@@ -52,19 +52,27 @@ const MyOrders = () => {
                 <h2 className="text-lg font-semibold text-gray-900">Order ID: {order.id}</h2>
                 <p className="text-gray-600">Date: {new Date(order.orderDate).toLocaleDateString()}</p>
                 <p className="text-gray-600">Total: ${order.totalAmount.toFixed(2)}</p>
-                <p className="text-gray-600">Status: {getOrderStatus(order.orderStatus)}</p>
+                <p className="text-gray-600">Status: {getOrderStatus(order.status)}</p>
                 <h3 className="text-md font-semibold mt-4">Items:</h3>
                 <ul className="text-gray-600 space-y-2">
-                  {order.orderItems.map((item) => (
-                    <li key={item.id} className="flex items-center space-x-4">
-                      <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-cover rounded" />
-                      <div>
-                        <p className="font-semibold">{item.product.name}</p>
-                        <p>Size: {item.product.size}</p>
-                        <p>Price: ${item.product.price.toFixed(2)}</p>
-                      </div>
-                    </li>
-                  ))}
+                  {order.items && order.items.length > 0 ? (
+                    order.items.map((item) => (
+                      <li key={item.id} className="flex items-center space-x-4">
+                        <img
+                          src={item.imageUrl} 
+                          alt={item.productName} 
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div>
+                          <p className="font-semibold">{item.productName}</p>
+                          <p>Size: {item.size}</p>
+                          <p>Price: ${item.price.toFixed(2)}</p>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li>No items available</li>
+                  )}
                 </ul>
               </div>
             ))}
