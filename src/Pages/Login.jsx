@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logoutUser } from '../Services/authService';
-import { FaLock as Lock, FaEnvelope as Mail } from 'react-icons/fa';
-import { HiLogin as LogIn, HiLogout as LogOut } from 'react-icons/hi';
+import { Mail, Lock, LogIn, LogOut, ShieldCheck, KeyRound } from 'lucide-react';
 
 const Login = ({ isLoggedIn, setIsLoggedIn }) => {
   const [formData, setFormData] = useState({
@@ -41,126 +40,126 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      console.log('Before logout:', localStorage.getItem('token'), localStorage.getItem('userId'));
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
-      console.log('After logout:', localStorage.getItem('token'), localStorage.getItem('userId'));
-  
-      setIsLoggedIn(false); 
-      navigate('/login');   
+      setIsLoggedIn(false);
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
-  
-  
 
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage:
-          'url("https://images.unsplash.com/photo-1554147090-e1221a04a025?ixlib=rb-1.2.1&auto=format&fit=crop&w=2048&q=80")'
-      }}
-    >
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-purple-600/30 to-pink-600/30 backdrop-blur-sm"></div>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-800 relative overflow-hidden animate-fade-in">
+      {/* Animated background patterns */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -inset-[10px] opacity-50">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-primary-400 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-secondary-400 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-primary-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
+      </div>
 
-      {/* Glass card container */}
-      <div className="relative z-10 w-full max-w-md p-6">
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold text-white mb-3">
-              {isLoggedIn ? 'Welcome Back' : 'Login'}
+      {/* Login Card */}
+      <div className="relative z-10 w-full max-w-md p-6 animate-slide-up">
+        <div className="bg-white/10 backdrop-blur-2xl rounded-4xl shadow-strong p-8 border border-white/20">
+          {/* Logo and Header */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                <KeyRound className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {isLoggedIn ? 'Welcome Back!' : 'Sign In'}
             </h1>
-            <p className="text-gray-200">
+            <p className="text-gray-200 text-sm">
               {isLoggedIn
-                ? 'You are already logged in.'
-                : 'Enter your credentials to continue'}
+                ? 'You are currently logged in'
+                : 'Please enter your credentials to continue'}
             </p>
           </div>
 
-          {/* Error message */}
+          {/* Error Display */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
-              {error}
+            <div className="mb-6 p-4 bg-red-500/10 backdrop-blur-sm border border-red-500/20 text-red-100 rounded-xl flex items-center gap-2">
+              <span className="text-sm">{error}</span>
             </div>
           )}
 
-          {/* Form or Logout button */}
+          {/* Login Form or Logout Button */}
           {!isLoggedIn ? (
             <form onSubmit={handleLogin} className="space-y-6">
-              {/* Email Field */}
+              {/* Email Input */}
               <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-200 flex items-center gap-2"
-                >
+                <label className="text-sm font-medium text-gray-200 flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  Email
+                  Email Address
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
-                    id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-400 focus:border-transparent transition duration-200"
                     placeholder="Enter your email"
+                    required
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
+              {/* Password Input */}
               <div className="space-y-2">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-gray-200 flex items-center gap-2"
-                >
+                <label className="text-sm font-medium text-gray-200 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   Password
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
-                    id="password"
                     name="password"
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-400 focus:border-transparent transition duration-200"
                     placeholder="Enter your password"
+                    required
                   />
                 </div>
               </div>
 
-              {/* Login Button */}
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 text-white font-medium py-3.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] group relative overflow-hidden"
+                className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium py-3.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] group relative overflow-hidden"
               >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                <span className="relative">Login</span>
+                <span className="relative flex items-center justify-center gap-2">
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </span>
               </button>
 
-              {/* Forgot Password Link */}
-              <div className="text-center">
-                <a
-                  href="#"
-                  className="text-sm text-gray-300 hover:text-white transition duration-200"
-                >
-                  Forgot your password?
-                </a>
+              {/* Footer Links */}
+              <div className="space-y-4">
+                <div className="text-center">
+                  <a href="#" className="text-sm text-gray-300 hover:text-white transition duration-200">
+                    Forgot your password?
+                  </a>
+                </div>
+                <div className="flex items-center justify-center text-gray-300 gap-2">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span className="text-xs">Secure login protected by SSL</span>
+                </div>
               </div>
             </form>
           ) : (
             <button
               onClick={handleLogout}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2"
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
             >
-              <LogOut className="h-5 w-5" />
-              Logout
+              <LogOut className="w-5 h-5" />
+              Sign Out
             </button>
           )}
         </div>
@@ -170,4 +169,3 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
 };
 
 export default Login;
- 

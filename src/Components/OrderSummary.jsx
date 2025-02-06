@@ -61,7 +61,6 @@ const OrderSummary = () => {
           <p className="text-gray-700"><strong>Mobile:</strong> {order.mobile}</p>
         </div>
 
-        {/* Knapp för att gå tillbaka till hemsidan */}
         <button
           onClick={() => navigate("/")}
           className="mt-6 w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-medium"
